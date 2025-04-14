@@ -1,0 +1,110 @@
+-- Solution 1: Total quantity of books sold by genre
+SELECT
+    book.Genre,
+    SUM(orderss.Quantity) AS total_book_sold
+FROM
+    online_book_store.book
+JOIN
+    online_book_store.orderss ON book.Book_ID = orderss.Book_ID
+GROUP BY
+    book.Genre;
+
+-- Solution 2: Average price of fantasy books
+SELECT
+    ROUND(AVG(price), 2) AS avg_price
+FROM
+    online_book_store.book
+WHERE
+    genre = 'fantasy';
+
+-- Solution 3: Customers who placed more than 2 orders
+SELECT
+    customers.name,
+    customers.Customer_ID,
+    COUNT(orderss.Order_ID) AS order_count
+FROM
+    online_book_store.orderss
+JOIN
+    online_book_store.customers ON orderss.Customer_ID = customers.Customer_ID
+GROUP BY
+    customers.Customer_ID, customers.name
+HAVING
+    order_count >= 2;
+
+-- Solution 4: Most ordered book (highest number of orders)
+SELECT
+    book.title,
+    orderss.Book_ID,
+    COUNT(orderss.Order_ID) AS order_count
+FROM
+    online_book_store.orderss
+JOIN
+    online_book_store.book ON orderss.Book_ID = book.Book_ID
+GROUP BY
+    book.title, orderss.Book_ID
+ORDER BY
+    order_count DESC
+LIMIT 1;
+
+-- Solution 5: Top 3 most expensive fantasy books
+SELECT
+    *
+FROM
+    online_book_store.book
+WHERE
+    genre = 'fantasy'
+ORDER BY
+    price DESC
+LIMIT 3;
+
+-- Solution 6: Total quantity of books sold by each author
+SELECT
+    book.Author,
+    SUM(orderss.Quantity) AS total_quantity_sold
+FROM
+    online_book_store.book
+JOIN
+    online_book_store.orderss ON orderss.Book_ID = book.Book_ID
+GROUP BY
+    book.Author;
+
+-- Solution 7: Cities where total order amount > 30
+SELECT
+    customers.city,
+    SUM(orderss.Total_amount) AS total
+FROM
+    online_book_store.customers
+JOIN
+    online_book_store.orderss ON customers.Customer_ID = orderss.Customer_ID
+GROUP BY
+    customers.city
+HAVING
+    total > 30;
+
+-- Solution 8: Customer who spent the most
+SELECT
+    customers.name,
+    SUM(orderss.Total_amount) AS total_spent
+FROM
+    online_book_store.customers
+JOIN
+    online_book_store.orderss ON customers.Customer_ID = orderss.Customer_ID
+GROUP BY
+    customers.name
+ORDER BY
+    total_spent DESC
+LIMIT 1;
+
+-- Solution 9: Book-wise stock, order quantity, and remaining quantity
+SELECT
+    book.Book_ID,
+    book.title,
+    book.stock,
+    COALESCE(SUM(orderss.Quantity), 0) AS order_quantity,
+    book.stock - COALESCE(SUM(orderss.Quantity), 0) AS remaining_quantity
+FROM
+    online_book_store.book
+LEFT JOIN
+    online_book_store.orderss ON book.Book_ID = orderss.Book_ID
+GROUP BY
+    book.Book_ID, book.title, book.stock;
