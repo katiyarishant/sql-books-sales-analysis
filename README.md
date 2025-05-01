@@ -1,5 +1,4 @@
-# sql-books-sales-analysis
-# 📚 BookWise: SQL Sales Insights
+# 📚 SQL Books Sales Insights
 
 This project explores advanced SQL queries to analyze a fictional book store's sales database. It demonstrates how structured data can be turned into valuable business insights using SQL.
 
